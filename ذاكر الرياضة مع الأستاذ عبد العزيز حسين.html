@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ذاكر الرياضة مع الأستاذ عبد العزيز حسين</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Cairo Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #090d16;
+            color: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.1);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .pulse-gold {
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            animation: pulse-gold-anim 2s infinite;
+        }
+
+        @keyframes pulse-gold-anim {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- TOP HEADER / VIP BAR FOR TEACHER & STUDENTS -->
+    <header class="glass-header sticky top-0 z-40 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+                
+                <!-- Main Brand Identity -->
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-start">
+                    <div class="flex items-center gap-3">
+                        <div class="relative group cursor-pointer" onclick="changeTeacherAvatar()">
+                            <img id="teacher-avatar-img" src="https://placehold.co/100x100/1e293b/f59e0b?text=MR+AZIZ" alt="الأستاذ عبد العزيز حسين" class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl object-cover border-2 border-amber-500 shadow-lg group-hover:scale-105 transition-transform">
+                            <span class="absolute -bottom-1 -right-1 bg-emerald-500 w-4 h-4 rounded-full border-2 border-slate-950" title="متصل بالسبورة الذكية"></span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-lg sm:text-xl font-black text-white tracking-tight">ذاكر الرياضة</h1>
+                                <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black px-2 py-0.5 rounded-full">مع الأستاذ عبد العزيز حسين</span>
+                            </div>
+                            <p class="text-xs text-slate-400 font-semibold">منصة الرياضيات الشاملة لجميع المراحل الدراسية 📐</p>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Smartboard Connect Quick Badge -->
+                    <button onclick="toggleSmartBoardQuick()" id="smartboard-mobile-btn" class="lg:hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-black px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                        <i class="fa-solid fa-tv"></i>
+                        <span>متصل</span>
+                    </button>
+                </div>
+
+                <!-- TEACHER CONTROL TOOLBAR (VIP Header Actions) -->
+                <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-center">
+                    
+                    <!-- Teacher Phone Quick Input & Action -->
+                    <div class="flex items-center bg-slate-900/90 border border-amber-500/30 px-3 py-1.5 rounded-2xl gap-2 shadow-inner">
+                        <i class="fa-solid fa-phone text-amber-400 text-xs"></i>
+                        <input id="quick-teacher-phone" type="text" placeholder="رقم الأستاذ (010...)" value="01000000000" class="bg-transparent text-xs font-extrabold text-white focus:outline-none w-28 sm:w-32">
+                        <button onclick="saveQuickPhone()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded-xl text-[11px] transition-all shadow">
+                            حفظ
+                        </button>
+                    </div>
+
+                    <!-- Smart Board Connect Button -->
+                    <button onclick="toggleSmartBoardQuick()" id="quick-smartboard-btn" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-3.5 py-2 rounded-2xl text-xs transition-all shadow-lg flex items-center gap-2 pulse-gold">
+                        <i class="fa-solid fa-tv text-sm"></i>
+                        <span id="smartboard-status-label">السبورة الذكية متصلة 🔴</span>
+                    </button>
+
+                    <!-- Teacher Portal Tab Direct Switch -->
+                    <button onclick="switchTab('teacher')" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-400 font-bold px-3 py-2 rounded-2xl text-xs transition-all flex items-center gap-1.5 relative">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>بوابة الأستاذ</span>
+                        <span id="header-notif-badge" class="w-4 h-4 bg-rose-600 text-white rounded-full text-[9px] font-black flex items-center justify-center">2</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Navigation Bar -->
+            <nav class="mt-3 pt-3 border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
+                <button id="btn-grades" onclick="switchTab('grades')" class="nav-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>المناهج الدراسية</span>
+                </button>
+                <button id="btn-schedule" onclick="switchTab('schedule')" class="nav-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>جدول ذاكر الرياضة</span>
+                </button>
+                <button id="btn-quiz" onclick="switchTab('quiz')" class="nav-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-square-root-variable"></i>
+                    <span>بنك الأسئلة والمنافسات</span>
+                </button>
+                <button id="btn-calc" onclick="switchTab('calc')" class="nav-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>آلة حاسبة والقوانين</span>
+                </button>
+                <button id="btn-timer" onclick="switchTab('timer')" class="nav-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <span>مؤقت حل الامتحانات</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+
+        <!-- TAB 1: CURRICULUMS & GRADES -->
+        <section id="tab-grades" class="space-y-6">
+            
+            <!-- Stage Selector Tabs -->
+            <div class="glass-panel p-2 rounded-3xl flex justify-center gap-2 max-w-2xl mx-auto border border-slate-800">
+                <button onclick="selectStage('primary')" id="stage-btn-primary" class="stage-btn flex-1 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all text-slate-400 hover:text-white">
+                    الابتدائية (4 - 5 - 6)
+                </button>
+                <button onclick="selectStage('prep')" id="stage-btn-prep" class="stage-btn flex-1 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all text-slate-400 hover:text-white">
+                    الإعدادية (1 - 2 - 3)
+                </button>
+                <button onclick="selectStage('sec')" id="stage-btn-sec" class="stage-btn active flex-1 py-2.5 bg-blue-600 text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg transition-all">
+                    الثانوية (1 - 2 - 3)
+                </button>
+            </div>
+
+            <!-- Sub Grade Selector (Dynamic) -->
+            <div id="sub-grade-container" class="flex justify-center gap-2 flex-wrap">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Lessons Grid -->
+            <div id="lessons-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- TAB 2: STUDY SCHEDULE -->
+        <section id="tab-schedule" class="hidden space-y-6">
+            <div class="glass-panel rounded-3xl p-6 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold px-3 py-1 rounded-full">تنظيم وقت الحل</span>
+                    <h2 class="text-2xl font-black text-white">جدول مذاكرة وتطبيق الرياضة بالورقة والقلم</h2>
+                    <p class="text-slate-400 text-xs max-w-lg">اضغط على الدروس المنتهية لتتبع نسبة إنجازك الأسبوعي وتكون جاهزاً للحصص مع الأستاذ عبد العزيز حسين.</p>
+                </div>
+                <div class="w-full md:w-64 bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center space-y-2">
+                    <span class="text-xs text-slate-400 font-bold block">نسبة الإنجاز الأسبوعي</span>
+                    <span id="schedule-progress-text" class="text-2xl font-black text-amber-400">0%</span>
+                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
+                        <div id="schedule-progress-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="math-schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ BANK -->
+        <section id="tab-quiz" class="hidden space-y-6">
+            <div class="max-w-3xl mx-auto glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/20">تحدي التفوق الرياضي</span>
+                        <h2 class="text-xl font-bold text-white mt-1" id="quiz-title">اختبار المهارات الرياضية والتفكير</h2>
+                    </div>
+                    <span class="text-sm font-black text-amber-400" id="quiz-counter">1 / 4</span>
+                </div>
+
+                <div id="quiz-body" class="space-y-5">
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-slate-200 font-bold text-sm sm:text-base leading-relaxed" id="quiz-question">
+                        جاري تحميل السؤال...
+                    </div>
+                    <div id="quiz-options" class="space-y-3">
+                        <!-- Options generated -->
+                    </div>
+                    <div id="quiz-feedback" class="hidden p-4 rounded-2xl text-xs sm:text-sm font-bold border"></div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xs text-slate-400 font-bold" id="quiz-live-score">النقاط: 0</span>
+                        <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs transition-all shadow">
+                            السؤال التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quiz-results" class="hidden text-center space-y-5 py-6">
+                    <div class="w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-3xl mx-auto border border-amber-500/40">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-white">ممتاز! أكملت الاختبار بنجاح</h3>
+                    <p class="text-3xl font-black text-amber-400" id="quiz-final-score">0 / 4</p>
+                    <button onclick="resetQuiz()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-8 py-3 rounded-2xl text-xs transition-all shadow-lg">
+                        إعادة الاختبار
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: CALCULATOR & LAWS -->
+        <section id="tab-calc" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Calculator -->
+                <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <h3 class="text-lg font-black text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>الآلة الحاسبة السريعة</span>
+                    </h3>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-right">
+                        <input id="calc-display" type="text" readonly class="w-full bg-transparent text-3xl font-mono text-emerald-400 text-right focus:outline-none" value="0">
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button onclick="calcInput('C')" class="p-3 bg-rose-500/20 text-rose-400 font-bold rounded-xl hover:bg-rose-500/30">C</button>
+                        <button onclick="calcInput('(')" class="p-3 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">(</button>
+                        <button onclick="calcInput(')')" class="p-3 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">)</button>
+                        <button onclick="calcInput('/')" class="p-3 bg-amber-500/20 text-amber-400 font-bold rounded-xl hover:bg-amber-500/30">÷</button>
+
+                        <button onclick="calcInput('7')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">7</button>
+                        <button onclick="calcInput('8')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">8</button>
+                        <button onclick="calcInput('9')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">9</button>
+                        <button onclick="calcInput('*')" class="p-3 bg-amber-500/20 text-amber-400 font-bold rounded-xl hover:bg-amber-500/30">×</button>
+
+                        <button onclick="calcInput('4')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">4</button>
+                        <button onclick="calcInput('5')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">5</button>
+                        <button onclick="calcInput('6')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">6</button>
+                        <button onclick="calcInput('-')" class="p-3 bg-amber-500/20 text-amber-400 font-bold rounded-xl hover:bg-amber-500/30">-</button>
+
+                        <button onclick="calcInput('1')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">1</button>
+                        <button onclick="calcInput('2')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">2</button>
+                        <button onclick="calcInput('3')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">3</button>
+                        <button onclick="calcInput('+')" class="p-3 bg-amber-500/20 text-amber-400 font-bold rounded-xl hover:bg-amber-500/30">+</button>
+
+                        <button onclick="calcInput('0')" class="col-span-2 p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">0</button>
+                        <button onclick="calcInput('.')" class="p-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700">.</button>
+                        <button onclick="calcEqual()" class="p-3 bg-amber-500 text-slate-950 font-black rounded-xl hover:bg-amber-400">=</button>
+                    </div>
+                </div>
+
+                <!-- Laws Guide -->
+                <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <h3 class="text-lg font-black text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                        <span>دليل أهم القوانين والمساحات</span>
+                    </h3>
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-amber-400 font-bold block">نظرية فيثاغورس:</span>
+                            <span class="text-slate-300 font-mono">الوتر² = (الضلع الأول)² + (الضلع الثاني)²</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-amber-400 font-bold block">مساحة المثلث:</span>
+                            <span class="text-slate-300">½ × طول القاعدة × الارتفاع</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-amber-400 font-bold block">مساحة الدائرة ومحيطها:</span>
+                            <span class="text-slate-300">المساحة = ط نق² | المحيط = 2 ط نق</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-amber-400 font-bold block">القانون العام لحل المعادلة التربيعية:</span>
+                            <span class="text-slate-300 font-mono">س = [-ب ± √(ب² - 4 أ جـ)] / (2 أ)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TIMER -->
+        <section id="tab-timer" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto glass-panel p-8 rounded-3xl border border-slate-800 text-center space-y-6 shadow-2xl">
+                <span class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/20">مؤقت حل تمارين الرياضة</span>
+                <h2 class="text-2xl font-black text-white">ضبط وقت الحل للسرعة والتركيز</h2>
+                
+                <div class="w-48 h-48 mx-auto rounded-full bg-gradient-to-tr from-blue-900 to-amber-900 border-4 border-amber-500/40 flex items-center justify-center shadow-2xl">
+                    <span id="timer-display" class="text-4xl font-mono font-black text-amber-400">25:00</span>
+                </div>
+
+                <div class="flex justify-center gap-3">
+                    <button onclick="toggleTimer()" id="timer-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-8 py-3 rounded-2xl text-xs transition-all shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> <span>ابدأ الحل الآن</span>
+                    </button>
+                    <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-5 py-3 rounded-2xl text-xs">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: TEACHER CONTROL PANEL -->
+        <section id="tab-teacher" class="hidden space-y-6">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-white">لوحة تحكم الأستاذ عبد العزيز حسين</h2>
+                        <p class="text-xs text-slate-400 mt-1">إدارة التنبيهات، تغيير رقم التواصل، والبث المباشر مع السبورة الذكية.</p>
+                    </div>
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-black px-3 py-1 rounded-full">السبورة الذكية جاهزة 🟢</span>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-amber-400">طلبات الشرح المباشرة الواردة من الطلاب:</h3>
+                    <div id="teacher-requests-feed" class="space-y-3">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LESSON POPUP MODAL (LESSON VIEW & TEACHER CONTACT) -->
+    <div id="lesson-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-5 shadow-2xl relative">
+            
+            <button onclick="closeLessonModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-1">
+                <span class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-0.5 rounded-full border border-amber-500/20" id="modal-stage-badge">المرحلة الثانوية</span>
+                <h3 class="text-xl font-black text-white" id="modal-lesson-title">عنوان الدرس</h3>
+            </div>
+
+            <!-- Notify Teacher Card -->
+            <div class="bg-gradient-to-r from-amber-500/10 to-blue-500/10 border border-amber-500/30 p-4 rounded-2xl flex items-center justify-between gap-3">
+                <div>
+                    <h4 class="text-xs sm:text-sm font-bold text-white">مش فاهم الدرس أو محتاج شرح بالسبورة؟</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">ارسل تنبيه مباشر على هاتف الأستاذ عبد العزيز حسين الآن.</p>
+                </div>
+                <button onclick="sendStudentRequest()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs transition-all shrink-0">
+                    ارسل طلب للأستاذ 🔔
+                </button>
+            </div>
+
+            <!-- Action Area -->
+            <div id="modal-action-area" class="space-y-4">
+                <div class="flex gap-2 border-b border-slate-800 pb-3">
+                    <button onclick="showVideoPlayer()" id="tab-btn-video" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded-xl text-xs">🎬 مشاهدة الشرح المباشر</button>
+                    <button onclick="showPdfViewer()" id="tab-btn-pdf" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2 rounded-xl text-xs">📄 مذكرة الدرس PDF</button>
+                </div>
+
+                <div id="modal-content-box" class="min-h-[220px] bg-slate-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-center text-center">
+                    <!-- Dynamic iframe / info -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- APP FOOTER -->
+    <footer class="glass-header py-6 border-t border-slate-800/80 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-sm font-black text-amber-400">ذاكر الرياضة مع الأستاذ عبد العزيز حسين</p>
+            <p class="text-xs text-slate-500">تم التطوير بتميز لـ <span class="text-slate-300 font-bold">سعيد أحمد</span> | جميع الحقوق محفوظة © 2026</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP ENGINE -->
+    <script>
+        /* ----------------------------------------------------
+           1. DATA STRUCTURES (STAGES & LESSONS)
+        ---------------------------------------------------- */
+        const mathData = {
+            sec: {
+                title: "المرحلة الثانوية",
+                grades: [
+                    { id: "sec1", name: "الصف الأول الثانوي" },
+                    { id: "sec2", name: "الصف الثاني الثانوي" },
+                    { id: "sec3", name: "الصف الثالث الثانوي (تفاضل/جبر/استاتيكا)" }
+                ],
+                lessons: {
+                    sec1: [
+                        { title: "حل معادلتي الدرجة الثانية في متغير واحد", topic: "جبر", icon: "fa-square-root-variable" },
+                        { title: "المصفوفات والعمليات عليها", topic: "جبر خطي", icon: "fa-table-cells" },
+                        { title: "المتجهات والهندسة التحليلية", topic: "هندسة", icon: "fa-draw-polygon" }
+                    ],
+                    sec2: [
+                        { title: "الدوال الحقيقية ورسم المنحنيات", topic: "جبر", icon: "fa-chart-line" },
+                        { title: "مبادئ التفاضل وحساب التغير", topic: "تفاضل", icon: "fa-wave-square" },
+                        { title: "قانون الجيب وجيب التمام", topic: "حساب مثلثات", icon: "fa-shapes" }
+                    ],
+                    sec3: [
+                        { title: "اشتقاق الدوال المثلثية والمعادلات الزمينة", topic: "تفاضل وتكامل", icon: "fa-bolt" },
+                        { title: "الاحتكاك والعزوم في المستويات", topic: "استاتيكا", icon: "fa-weight-hanging" },
+                        { title: "الأعداد المركبة ونظرية ديموافر", topic: "جبر وفراغية", icon: "fa-atom" }
+                    ]
+                }
+            },
+            prep: {
+                title: "المرحلة الإعدادية",
+                grades: [
+                    { id: "prep1", name: "الصف الأول الإعدادي" },
+                    { id: "prep2", name: "الصف الثاني الإعدادي" },
+                    { id: "prep3", name: "الصف الثالث الإعدادي (الشهادة الإعدادية)" }
+                ],
+                lessons: {
+                    prep1: [
+                        { title: "مجموعة الأعداد النسبية والعمليات عليها", topic: "جبر", icon: "fa-cubes" },
+                        { title: "المفاهيم الهندسية والعلاقات بين الزوايا", topic: "هندسة", icon: "fa-vector-square" }
+                    ],
+                    prep2: [
+                        { title: "الأعداد الحقيقية والتحليل الرياضي", topic: "جبر", icon: "fa-calculator" },
+                        { title: "تساوى مساحات متوازيات الأضلاع", topic: "هندسة", icon: "fa-object-group" }
+                    ],
+                    prep3: [
+                        { title: "حاصل الضرب الديكارتي والدوال", topic: "جبر", icon: "fa-diagram-project" },
+                        { title: "حساب المثلثات والنسب المثلثية الأساسية", topic: "مثلثات", icon: "fa-play" }
+                    ]
+                }
+            },
+            primary: {
+                title: "المرحلة الابتدائية",
+                grades: [
+                    { id: "pri4", name: "الصف الرابع الابتدائي" },
+                    { id: "pri5", name: "الصف الخامس الابتدائي" },
+                    { id: "pri6", name: "الصف السادس الابتدائي" }
+                ],
+                lessons: {
+                    pri4: [
+                        { title: "القيمة المكانية والأعداد الكبيرة", topic: "حساب", icon: "fa-arrow-up-1-9" },
+                        { title: "استراتيجيات الجمع والطرح والضرب", topic: "عمليات", icon: "fa-plus-minus" }
+                    ],
+                    pri5: [
+                        { title: "الكسور العشرية حتى جزء من ألف", topic: "كسور", icon: "fa-percent" },
+                        { title: "ضرب وقسمة الكسور العشرية", topic: "عمليات", icon: "fa-divide" }
+                    ],
+                    pri6: [
+                        { title: "النسبة والمعدل وتطبيقاتهما", topic: "نسبة", icon: "fa-scale-balanced" },
+                        { title: "النسبة المئوية والمخططات الشريطية", topic: "احصاء", icon: "fa-chart-pie" }
+                    ]
+                }
+            }
+        };
+
+        let currentStage = 'sec';
+        let currentSubGrade = 'sec1';
+        let teacherPhone = localStorage.getItem('teacher_phone') || "01000000000";
+        let isSmartBoardConnected = true;
+
+        /* ----------------------------------------------------
+           2. TEACHER TOOLBAR & SMARTBOARD LOGIC
+        ---------------------------------------------------- */
+        function saveQuickPhone() {
+            const val = document.getElementById('quick-teacher-phone').value.trim();
+            if (val) {
+                teacherPhone = val;
+                localStorage.setItem('teacher_phone', teacherPhone);
+                alert(`📱 تم التحديث: رقم الأستاذ عبد العزيز الحالي هو (${teacherPhone})`);
+            }
+        }
+
+        function toggleSmartBoardQuick() {
+            isSmartBoardConnected = !isSmartBoardConnected;
+            const btn = document.getElementById('quick-smartboard-btn');
+            const mobileBtn = document.getElementById('smartboard-mobile-btn');
+            const label = document.getElementById('smartboard-status-label');
+
+            if (isSmartBoardConnected) {
+                btn.className = "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-3.5 py-2 rounded-2xl text-xs transition-all shadow-lg flex items-center gap-2 pulse-gold";
+                label.innerText = "السبورة الذكية متصلة 🔴";
+                if(mobileBtn) mobileBtn.innerHTML = `<i class="fa-solid fa-tv"></i><span>متصل</span>`;
+                alert("📺 التوصيل بالسبورة الذكية متصل الآن وبث الشرح مباشر للطلاب.");
+            } else {
+                btn.className = "bg-slate-800 text-slate-400 font-bold px-3.5 py-2 rounded-2xl text-xs transition-all flex items-center gap-2";
+                label.innerText = "توصيل بالسبورة الذكية";
+                if(mobileBtn) mobileBtn.innerHTML = `<i class="fa-solid fa-tv"></i><span>غير متصل</span>`;
+            }
+        }
+
+        function changeTeacherAvatar() {
+            const url = prompt("أدخل رابط صورة الأستاذ الجديدة:", "https://placehold.co/100x100/1e293b/f59e0b?text=MR+AZIZ");
+            if (url) {
+                document.getElementById('teacher-avatar-img').src = url;
+            }
+        }
+
+        /* ----------------------------------------------------
+           3. STAGE & LESSON RENDERING
+        ---------------------------------------------------- */
+        function selectStage(stageKey) {
+            currentStage = stageKey;
+            
+            // Highlight Stage Buttons
+            document.querySelectorAll('.stage-btn').forEach(b => {
+                b.className = "stage-btn flex-1 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all text-slate-400 hover:text-white";
+            });
+            const activeBtn = document.getElementById(`stage-btn-${stageKey}`);
+            if (activeBtn) activeBtn.className = "stage-btn active flex-1 py-2.5 bg-blue-600 text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg transition-all";
+
+            // Populate Sub-Grades
+            const subContainer = document.getElementById('sub-grade-container');
+            subContainer.innerHTML = '';
+            
+            const stageInfo = mathData[stageKey];
+            stageInfo.grades.forEach((g, idx) => {
+                if (idx === 0) currentSubGrade = g.id;
+                const b = document.createElement('button');
+                b.className = `sub-grade-btn border px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${idx === 0 ? 'bg-amber-500 text-slate-950 border-amber-500' : 'bg-slate-900 border-slate-800 text-slate-300'}`;
+                b.innerText = g.name;
+                b.onclick = () => selectSubGrade(g.id, b);
+                subContainer.appendChild(b);
+            });
+
+            renderLessons();
+        }
+
+        function selectSubGrade(subId, btnEl) {
+            currentSubGrade = subId;
+            document.querySelectorAll('.sub-grade-btn').forEach(b => {
+                b.className = "sub-grade-btn bg-slate-900 border border-slate-800 text-slate-300 px-4 py-1.5 rounded-xl text-xs font-bold transition-all";
+            });
+            btnEl.className = "sub-grade-btn bg-amber-500 border border-amber-500 text-slate-950 px-4 py-1.5 rounded-xl text-xs font-bold transition-all shadow";
+            renderLessons();
+        }
+
+        function renderLessons() {
+            const grid = document.getElementById('lessons-grid');
+            grid.innerHTML = '';
+
+            const list = mathData[currentStage].lessons[currentSubGrade] || [];
+            
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-5 rounded-3xl space-y-4 flex flex-col justify-between transition-all";
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-black bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2.5 py-0.5 rounded-full">${item.topic}</span>
+                            <i class="fa-solid ${item.icon} text-amber-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-base font-extrabold text-white leading-snug">${item.title}</h3>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex gap-2">
+                        <button onclick="openLessonModal('${item.title}')" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2 rounded-xl text-xs transition-all shadow">
+                            🎬 ابدأ الشرح
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        /* ----------------------------------------------------
+           4. LESSON MODAL & NOTIFY TEACHER
+        ---------------------------------------------------- */
+        let currentModalTitle = "";
+
+        function openLessonModal(title) {
+            currentModalTitle = title;
+            document.getElementById('modal-lesson-title').innerText = title;
+            document.getElementById('modal-stage-badge').innerText = mathData[currentStage].title;
+            document.getElementById('lesson-modal').classList.remove('hidden');
+            showVideoPlayer();
+        }
+
+        function closeLessonModal() {
+            document.getElementById('lesson-modal').classList.add('hidden');
+        }
+
+        function showVideoPlayer() {
+            const box = document.getElementById('modal-content-box');
+            box.innerHTML = `
+                <div class="space-y-3 text-center">
+                    <div class="w-14 h-14 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-2xl mx-auto border border-amber-500/30">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <h4 class="text-sm font-bold text-white">مشغّل الشرح المباشر للأستاذ عبد العزيز حسين</h4>
+                    <p class="text-xs text-slate-400">فيديو الشرح متصل بالسبورة الذكية ومتاح الآن للطلاب.</p>
+                    <button onclick="alert('جاري البدء في تشغيل فيديو الشرح المباشر...')" class="bg-blue-600 hover:bg-blue-500 text-white font-black px-6 py-2 rounded-xl text-xs transition-all shadow">
+                        تشغيل الشرح المباشر 🔴
+                    </button>
+                </div>
+            `;
+        }
+
+        function showPdfViewer() {
+            const box = document.getElementById('modal-content-box');
+            box.innerHTML = `
+                <div class="space-y-3 text-center">
+                    <div class="w-14 h-14 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-2xl mx-auto border border-blue-500/30">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <h4 class="text-sm font-bold text-white">مذكرة الدرس والتمارين PDF</h4>
+                    <p class="text-xs text-slate-400">ملخص وشرح قوانين الدرس بالكامل للطباعة والمذاكرة.</p>
+                    <button onclick="alert('جاري تحميل مذكرة الدرس بصيغة PDF...')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-2 rounded-xl text-xs transition-all shadow">
+                        تحميل المذكرة 📥
+                    </button>
+                </div>
+            `;
+        }
+
+        function sendStudentRequest() {
+            const message = encodeURIComponent(`أهلاً أستاذ عبد العزيز حسين! طلاب ${mathData[currentStage].title} يرغبون في شرح درس (${currentModalTitle}) الآن عبر السبورة الذكية.`);
+            const directUrl = `https://wa.me/${teacherPhone}?text=${message}`;
+            window.open(directUrl, '_blank');
+            alert(`📱 تم إرسال الرسالة بنجاح إلى هاتف الأستاذ (${teacherPhone})!`);
+        }
+
+        /* ----------------------------------------------------
+           5. TAB SWITCHING LOGIC
+        ---------------------------------------------------- */
+        function switchTab(tabName) {
+            const tabs = ['grades', 'schedule', 'quiz', 'calc', 'timer', 'teacher'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    if (btn) btn.classList.add('active');
+                } else {
+                    sec.classList.add('hidden');
+                    if (btn) btn.classList.remove('active');
+                }
+            });
+        }
+
+        /* ----------------------------------------------------
+           6. CALCULATOR & TIMER LOGIC
+        ---------------------------------------------------- */
+        function calcInput(val) {
+            const disp = document.getElementById('calc-display');
+            if (disp.value === "0" || disp.value === "Error") disp.value = "";
+            if (val === "C") {
+                disp.value = "0";
+            } else {
+                disp.value += val;
+            }
+        }
+
+        function calcEqual() {
+            const disp = document.getElementById('calc-display');
+            try {
+                disp.value = eval(disp.value);
+            } catch {
+                disp.value = "Error";
+            }
+        }
+
+        let timerSecs = 25 * 60;
+        let isTimerRunning = false;
+        let timerInterval = null;
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>متابعة</span>`;
+            } else {
+                isTimerRunning = true;
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> <span>إيقاف</span>`;
+                timerInterval = setInterval(() => {
+                    if (timerSecs > 0) {
+                        timerSecs--;
+                        const m = Math.floor(timerSecs / 60);
+                        const s = timerSecs % 60;
+                        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    } else {
+                        clearInterval(timerInterval);
+                        alert("🎉 انتهى الوقت! أظهر نتيجتك وحلك للأستاذ عبد العزيز.");
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            if (isTimerRunning) toggleTimer();
+            timerSecs = 25 * 60;
+            document.getElementById('timer-display').innerText = "25:00";
+        }
+
+        /* INIT */
+        window.onload = function() {
+            const saved = localStorage.getItem('teacher_phone');
+            if (saved) {
+                document.getElementById('quick-teacher-phone').value = saved;
+                teacherPhone = saved;
+            }
+            selectStage('sec');
+        };
+    </script>
+</body>
+</html>
