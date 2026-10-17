@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تميز من مكانك - منصة الثانوية العامة</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Cairo Font from Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        
+        .pulse-btn {
+            animation: pulse-ring 3s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Top Header / Navigation -->
+    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                
+                <!-- Logo & Brand Info -->
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-amber-400 text-xl shadow-lg">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">تميز من مكانك</h1>
+                        <p class="text-xs text-blue-400 font-bold">منصة الثانوية العامة الشاملة 🚀</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                    <div class="flex items-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800 min-w-max">
+                        <button onclick="switchTab('schedule')" id="btn-schedule" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span>جدول المذاكرة</span>
+                        </button>
+                        <button onclick="switchTab('grades')" id="btn-grades" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>المناهج والكتب الرقمية</span>
+                        </button>
+                        <button onclick="switchTab('quiz')" id="btn-quiz" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>بنك الأسئلة</span>
+                        </button>
+                        <button onclick="switchTab('timer')" id="btn-timer" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-stopwatch"></i>
+                            <span>مؤقت التركيز</span>
+                        </button>
+                    </div>
+                </nav>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <!-- TAB 1: SCHEDULE PLANNER -->
+        <section id="tab-schedule" class="space-y-6">
+            
+            <!-- Welcome / Overview Card -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-right">
+                    <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-3 py-1 rounded-full inline-block">الخطة الأسبوعية المباشرة</span>
+                    <h2 class="text-2xl font-black text-white">جدول تنظيم الوقت الأسبوعي للمواد</h2>
+                    <p class="text-slate-400 text-xs sm:text-sm max-w-xl">اضغط على المواد المنتهية لتحديد إنجازك اليومي، وتابع تقدمك الأسبوعي للوصول لأعلى الدرجات!</p>
+                </div>
+                
+                <!-- Progress Ring -->
+                <div class="w-full md:w-72 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-slate-300">نسبة الإنجاز الأسبوعي:</span>
+                        <span id="weekly-progress-text" class="text-amber-400 font-extrabold text-sm">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
+                        <div id="weekly-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-motto" class="text-[11px] text-center text-slate-400 font-semibold">تألق من مكانك وابدأ أول مهامك!</p>
+                </div>
+            </div>
+
+            <!-- Schedule Grid -->
+            <div id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dynamic Schedule Cards -->
+            </div>
+        </section>
+
+        <!-- TAB 2: CURRICULUM & DIGITAL BOOKS -->
+        <section id="tab-grades" class="hidden space-y-6">
+            <div class="text-center space-y-2 max-w-2xl mx-auto">
+                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold px-3 py-1 rounded-full">المكتبة الرقمية الشاملة</span>
+                <h2 class="text-2xl font-black text-white">الكتاب المدرسي والملازم المباشرة</h2>
+                <p class="text-slate-400 text-xs">تصفح الكتب، الملازم المكتوبة، والقوانين الشارحة مباشرة بضغطة زر وبدون الحاجة لانتظار فيديوهات المدرسين.</p>
+            </div>
+
+            <!-- Grade Filter Buttons -->
+            <div class="flex justify-center gap-2 flex-wrap">
+                <button onclick="filterGrade('sec1')" id="grade-btn-sec1" class="grade-filter-btn active bg-blue-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-lg text-xs sm:text-sm transition-all">
+                    الصف الأول الثانوي
+                </button>
+                <button onclick="filterGrade('sec2')" id="grade-btn-sec2" class="grade-filter-btn bg-slate-800 text-slate-300 border border-slate-700 font-bold px-5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all hover:bg-slate-700">
+                    الصف الثاني الثانوي
+                </button>
+                <button onclick="filterGrade('sec3')" id="grade-btn-sec3" class="grade-filter-btn bg-slate-800 text-slate-300 border border-slate-700 font-bold px-5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all hover:bg-slate-700">
+                    الصف الثالث الثانوي (الثانوية العامة)
+                </button>
+            </div>
+
+            <!-- Subjects Grid -->
+            <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ BANK -->
+        <section id="tab-quiz" class="hidden space-y-6">
+            <div class="max-w-3xl mx-auto glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">بنك الأسئلة التفاعلي</span>
+                        <h2 class="text-lg sm:text-xl font-bold text-white mt-1">اختبارات واستيعاب المواد</h2>
+                    </div>
+                    <div class="text-left">
+                        <span class="text-[10px] text-slate-400 font-semibold block">السؤال</span>
+                        <span class="text-base font-black text-blue-400" id="quiz-counter">1 / 4</span>
+                    </div>
+                </div>
+
+                <div id="quiz-content" class="space-y-6">
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+                        <h3 class="text-sm sm:text-base font-bold text-slate-100 leading-relaxed" id="quiz-question-text">جاري تحميل السؤال...</h3>
+                    </div>
+                    <div id="quiz-options-container" class="space-y-3"></div>
+                    <div id="quiz-explanation" class="hidden p-4 rounded-2xl text-xs font-semibold border"></div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xs text-slate-400 font-bold" id="quiz-score-live">النقاط: 0</span>
+                        <button id="quiz-next-btn" onclick="nextQuestion()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2 rounded-xl text-xs transition-all">
+                            السؤال التالي <i class="fa-solid fa-arrow-left mr-1.5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quiz-result-screen" class="hidden text-center space-y-5 py-6">
+                    <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center text-3xl mx-auto border border-amber-500/20">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-white">أحسنت! أكملت الاختبار بنجاح</h3>
+                    <div class="text-3xl font-black text-blue-400" id="final-score-text">0 / 4</div>
+                    <button onclick="restartQuiz()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all">إعادة الاختبار</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: POMODORO TIMER -->
+        <section id="tab-timer" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto glass-card rounded-3xl p-8 text-center shadow-2xl border border-slate-800 space-y-6">
+                <div>
+                    <span class="bg-indigo-500/10 text-indigo-400 text-xs font-bold px-3 py-1 rounded-full border border-indigo-500/20">تقنية التركيز البومودورو</span>
+                    <h2 class="text-2xl font-black text-white mt-2">مؤقت المذاكرة المباشر</h2>
+                </div>
+                <div class="relative w-48 h-48 mx-auto flex items-center justify-center bg-slate-900 text-white rounded-full border-4 border-blue-500/30 shadow-2xl">
+                    <span id="timer-display" class="text-4xl font-black font-mono tracking-tight text-amber-400">25:00</span>
+                </div>
+                <div class="flex justify-center gap-3">
+                    <button id="timer-start-btn" onclick="toggleTimer()" class="pulse-btn bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-2.5 rounded-xl transition-all text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> <span>ابدأ المذاكرة</span>
+                    </button>
+                    <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-5 py-2.5 rounded-xl text-xs transition-all">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LESSON POPUP MODAL (DIGITAL BOOK READER) -->
+    <div id="lesson-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative">
+            <button onclick="closeLessonModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="space-y-1">
+                <span class="bg-amber-500/10 text-amber-400 text-[10px] font-bold px-3 py-0.5 rounded-full border border-amber-500/20">تصفح الكتاب المباشر</span>
+                <h3 class="text-lg font-black text-white" id="modal-lesson-title">مادة الكتاب</h3>
+            </div>
+            <div id="modal-content-box" class="min-h-[260px] bg-slate-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-center text-center">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- App Footer -->
+    <footer class="bg-slate-950 text-white border-t border-slate-900 py-5 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
+            <p class="text-sm font-black text-blue-400">تميز من مكانك</p>
+            <p class="text-[11px] text-slate-500">تم التطوير بواسطة <span class="text-slate-300 font-bold">سعيد أحمد</span> | جميع الحقوق محفوظة © 2026</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /* 1. DATA STRUCTURES */
+        const defaultSchedule = [
+            { day: "الأحد", tasks: [{ id: "sun-1", text: "عربي (ساعتين)", completed: false }, { id: "sun-2", text: "رياضة (ساعتين)", completed: false }] },
+            { day: "الإثنين", tasks: [{ id: "mon-1", text: "إنجليزي (ساعتين)", completed: false }, { id: "mon-2", text: "علوم متكاملة (ساعتين)", completed: false }] },
+            { day: "الثلاثاء", tasks: [{ id: "tue-1", text: "فلسفة (ساعة ونصف)", completed: false }, { id: "tue-2", text: "تاريخ (ساعة ونصف)", completed: false }] },
+            { day: "الأربعاء", tasks: [{ id: "wed-1", text: "علوم متكاملة (ساعة ونصف)", completed: false }, { id: "wed-2", text: "إنجليزي (ساعتين)", completed: false }] },
+            { day: "الخميس", tasks: [{ id: "thu-1", text: "رياضة (ساعتين)", completed: false }, { id: "thu-2", text: "عربي (ساعة ونصف)", completed: false }] },
+            { day: "الجمعة", isRest: true, tasks: [{ id: "fri-1", text: "☕ راحة وتصفية الذهن وتجديد النشاط", completed: true }] },
+            { day: "السبت", tasks: [{ id: "sat-1", text: "فلسفة (ساعة)", completed: false }, { id: "sat-2", text: "تاريخ (ساعة)", completed: false }] }
+        ];
+
+        let scheduleData = JSON.parse(localStorage.getItem('tamayaz_schedule')) || defaultSchedule;
+
+        const gradeSubjectsData = {
+            sec1: [
+                { name: "اللغة العربية", icon: "fa-book-quran", desc: "الكتاب والتلخيص المباشر لجميع الدروس والنحو", color: "from-blue-500 to-indigo-600" },
+                { name: "الرياضيات", icon: "fa-calculator", desc: "قوانين وأمثلة محلولة للجبر وحساب المثلثات والهندسة", color: "from-purple-500 to-pink-600" },
+                { name: "العلوم المتكاملة", icon: "fa-flask-vial", desc: "كتاب الفيزياء والكيمياء والأحياء للفيزياء التطبيقية", color: "from-emerald-500 to-teal-600" },
+                { name: "اللغة الإنجليزية", icon: "fa-language", desc: "نصوص الكتاب والكلمات وقواعد الجرامار بالكامل", color: "from-amber-500 to-orange-600" },
+                { name: "الفلسفة والمنطق", icon: "fa-brain", desc: "مذكرة التفكير العلمي وقضايا الفلسفة والمنطق", color: "from-rose-500 to-red-600" },
+                { name: "التاريخ", icon: "fa-landmark", desc: "تصفح كتاب تاريخ الحضارات القديمة والحديثة", color: "from-cyan-500 to-blue-600" }
+            ],
+            sec2: [
+                { name: "اللغة العربية", icon: "fa-book-quran", desc: "شرح وأدب ونصوص للثاني الثانوي", color: "from-blue-500 to-indigo-600" },
+                { name: "الرياضيات المحتضنة", icon: "fa-square-root-variable", desc: "الجبر والتفاضل والتكامل وحساب المثلثات", color: "from-purple-500 to-pink-600" },
+                { name: "الفيزياء (علمي)", icon: "fa-atom", desc: "كتاب الضوء والموجات والمادة المعتمدة", color: "from-sky-500 to-blue-700" },
+                { name: "الكيمياء (علمي)", icon: "fa-vial", desc: "الروابط الكيميائية وبنية الذرة", color: "from-emerald-500 to-green-700" },
+                { name: "التاريخ (أدبي)", icon: "fa-landmark", desc: "ملخص التاريخ الإسلامي والحديث", color: "from-amber-500 to-yellow-600" }
+            ],
+            sec3: [
+                { name: "اللغة العربية (ثانوية عامة)", icon: "fa-graduation-cap", desc: "كتاب وقواعد النحو والنصوص لجميع الفصول", color: "from-blue-600 to-indigo-800" },
+                { name: "الرياضيات التطبيقية", icon: "fa-square-root-variable", desc: "التفاضل والتكامل والميكانيكا والاستاتيكا", color: "from-violet-600 to-purple-800" },
+                { name: "العلوم المتكاملة والفيزياء", icon: "fa-bolt", desc: "الكهربية والفيزياء الحديثة المحلولة", color: "from-teal-600 to-emerald-800" },
+                { name: "اللغة الإنجليزية", icon: "fa-spell-check", desc: "المفردات والنصوص والقواعد المباشرة", color: "from-amber-600 to-orange-800" }
+            ]
+        };
+
+        const quizQuestions = [
+            { question: "ما إعراب كلمة (طالباً) في: 'ذاكر الطالب طالباً للتميز'؟", options: ["مفعول به", "مفعول لأجله منصوب", "حال", "تمييز"], correct: 1, explanation: "بيّنت سبب حدوث الفعل لذلك تُعرب مفعولاً لأجله." },
+            { question: "ما الفائدة الأساسية لمنهج العلوم المتكاملة بالثانوية؟", options: ["الفصل بين العلوم", "ربط الفيزياء والكيمياء والأحياء في سياق بيئي واحد", "إلغاء التجارب", "التركيز على مادة واحدة"], correct: 1, explanation: "تهدف لدمج المفاهيم العلمية بطريقة مبسطة ومتكاملة." },
+            { question: "المعدل الزمني المثالي لدورة المذاكرة وفق تقنية بومودورو هو:", options: ["10 دقائق", "25 دقيقة تركيز ثم 5 دقائق راحة", "60 دقيقة متواصلة", "ساعتان متصلتان"], correct: 1, explanation: "25 دقيقة تضمن أعلى معدل تركيز للذهن دون إجهاد." }
+        ];
+
+        let currentQuizIndex = 0, quizScore = 0, timerSeconds = 1500, timerInterval = null, isTimerRunning = false;
+
+        /* TAB NAVIGATION */
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'text-white'));
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        /* SCHEDULE RENDERING */
+        function renderSchedule() {
+            const grid = document.getElementById('schedule-grid');
+            grid.innerHTML = '';
+            let totalTasks = 0, completedTasks = 0;
+
+            scheduleData.forEach(day => {
+                const card = document.createElement('div');
+                card.className = `glass-card p-5 rounded-3xl border flex flex-col justify-between ${day.isRest ? 'border-amber-500/30 bg-amber-500/5' : 'border-slate-800'}`;
+                
+                let tasksHTML = '';
+                day.tasks.forEach(t => {
+                    totalTasks++;
+                    if (t.completed) completedTasks++;
+                    tasksHTML += `
+                        <div onclick="toggleTask('${t.id}')" class="flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all ${t.completed ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-slate-900 border border-slate-800 text-slate-200 hover:border-slate-700'}">
+                            <i class="fa-solid ${t.completed ? 'fa-circle-check text-emerald-400' : 'fa-circle text-slate-600'} text-base"></i>
+                            <span class="text-xs font-bold ${t.completed ? 'line-through opacity-80' : ''}">${t.text}</span>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <h3 class="font-extrabold text-white text-base">${day.day}</h3>
+                            ${day.isRest ? '<span class="text-[10px] bg-amber-500/20 text-amber-400 font-black px-2.5 py-0.5 rounded-full border border-amber-500/30">يوم راحة ☕</span>' : ''}
+                        </div>
+                        <div class="space-y-2">${tasksHTML}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            const percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            document.getElementById('weekly-progress-bar').style.width = `${percent}%`;
+            document.getElementById('weekly-progress-text').innerText = `${percent}%`;
+            localStorage.setItem('tamayaz_schedule', JSON.stringify(scheduleData));
+        }
+
+        function toggleTask(id) {
+            scheduleData.forEach(d => d.tasks.forEach(t => { if (t.id === id) t.completed = !t.completed; }));
+            renderSchedule();
+        }
+
+        /* SUBJECTS & BOOKS RENDERING */
+        function filterGrade(gradeKey) {
+            document.querySelectorAll('.grade-filter-btn').forEach(btn => {
+                btn.className = "grade-filter-btn bg-slate-800 text-slate-300 border border-slate-700 font-bold px-5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all hover:bg-slate-700";
+            });
+            const activeBtn = document.getElementById(`grade-btn-${gradeKey}`);
+            if (activeBtn) activeBtn.className = "grade-filter-btn active bg-blue-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-lg text-xs sm:text-sm transition-all";
+
+            const subjects = gradeSubjectsData[gradeKey] || [];
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+
+            subjects.forEach(sub => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl p-5 border border-slate-800 flex flex-col justify-between space-y-4";
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr ${sub.color} text-white flex items-center justify-center text-lg shadow">
+                            <i class="fa-solid ${sub.icon}"></i>
+                        </div>
+                        <h3 class="text-base font-extrabold text-white">${sub.name}</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">${sub.desc}</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openBookModal('${sub.name}')" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow">
+                            <i class="fa-solid fa-book-open"></i> <span>📖 تصفح الكتاب</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openBookModal(title) {
+            document.getElementById('modal-lesson-title').innerText = title;
+            const box = document.getElementById('modal-content-box');
+            box.innerHTML = `
+                <div class="space-y-4 w-full text-right">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-black text-amber-400">📖 الكتاب المباشر والملخص</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">جاهز للقراءة والمذاكرة</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 text-xs text-slate-300">
+                            <p>📌 <strong>محتوى المقرر الشارح:</strong> يحتوي هذا المرجع الرقمي على نصوص الدرس، القوانين المعتمدة، والأمثلة المحلولة خطوة بخطوة للطلاب.</p>
+                            <div class="p-2.5 bg-slate-900 rounded-lg font-mono text-emerald-400 border border-slate-800 text-[11px]">
+                                💡 مثال شارح: س² + 5س + 6 = 0 <br>
+                                الحل المفصل: (س + 2)(س + 3) = 0 👈 إما س = -2 أو س = -3
+                            </div>
+                        </div>
+                        <button onclick="alert('تم حفظ أوراق الكتاب والقوانين للتصفح بدون إنترنت!')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all w-full flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download"></i> <span>تنزيل المذكرة (PDF)</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('lesson-modal').classList.remove('hidden');
+        }
+
+        function closeLessonModal() {
+            document.getElementById('lesson-modal').classList.add('hidden');
+        }
+
+        /* QUIZ LOGIC */
+        function loadQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-counter').innerText = `${currentQuizIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quiz-question-text').innerText = q.question;
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+            document.getElementById('quiz-explanation').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full text-right p-3 rounded-xl border border-slate-800 bg-slate-900 hover:border-blue-500 text-xs font-bold text-slate-200 transition-all flex items-center gap-2.5";
+                btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 text-[10px] flex items-center justify-center font-bold">${idx + 1}</span><span>${opt}</span>`;
+                btn.onclick = () => handleQuizAnswer(idx, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(idx, btn) {
+            const q = quizQuestions[currentQuizIndex];
+            document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+            const exp = document.getElementById('quiz-explanation');
+            exp.classList.remove('hidden');
+
+            if (idx === q.correct) {
+                btn.classList.add('bg-emerald-500/10', 'border-emerald-500', 'text-emerald-400');
+                quizScore++;
+                document.getElementById('quiz-score-live').innerText = `النقاط: ${quizScore}`;
+                exp.className = "p-3 rounded-xl text-xs font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+                exp.innerHTML = `✅ إجابة صحيحة! ${q.explanation}`;
+            } else {
+                btn.classList.add('bg-rose-500/10', 'border-rose-500', 'text-rose-400');
+                exp.className = "p-3 rounded-xl text-xs font-semibold border bg-rose-500/10 border-rose-500/30 text-rose-400";
+                exp.innerHTML = `❌ إجابة خاطئة. ${q.explanation}`;
+            }
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) loadQuizQuestion();
+            else {
+                document.getElementById('quiz-content').classList.add('hidden');
+                document.getElementById('quiz-result-screen').classList.remove('hidden');
+                document.getElementById('final-score-text').innerText = `${quizScore} / ${quizQuestions.length}`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0; quizScore = 0;
+            document.getElementById('quiz-score-live').innerText = `النقاط: 0`;
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        /* TIMER LOGIC */
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60), secs = timerSeconds % 60;
+            document.getElementById('timer-display').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-start-btn');
+            if (isTimerRunning) {
+                clearInterval(timerInterval); isTimerRunning = false;
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>متابعة</span>`;
+            } else {
+                isTimerRunning = true;
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> <span>إيقاف مؤقت</span>`;
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); }
+                    else { clearInterval(timerInterval); isTimerRunning = false; alert("🎉 انتهى الوقت المح محدد للتركيز!"); resetTimer(); }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            if (isTimerRunning) toggleTimer();
+            timerSeconds = 1500; updateTimerDisplay();
+            document.getElementById('timer-start-btn').innerHTML = `<i class="fa-solid fa-play"></i> <span>ابدأ المذاكرة</span>`;
+        }
+
+        /* INIT */
+        window.onload = function() {
+            renderSchedule();
+            filterGrade('sec1');
+            loadQuizQuestion();
+            updateTimerDisplay();
+        };
+    </script>
+</body>
+</html>
