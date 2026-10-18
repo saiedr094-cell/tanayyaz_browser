@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scar Store | سكار ستور - منصة شحن الألعاب الأولى</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        scar: {
+                            red: '#ff2a2a',
+                            darkRed: '#990000',
+                            accent: '#ff4d4d',
+                            dark: '#0a0a0c',
+                            card: '#141419',
+                            border: '#2a2a35'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #08080a;
+            color: #ffffff;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 42, 42, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(255, 42, 42, 0.05) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+        
+        .neon-border {
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.2);
+        }
+        
+        .neon-border:hover {
+            box-shadow: 0 0 25px rgba(255, 42, 42, 0.5);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff2a2a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #990000;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 25, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-scar-red selection:text-white">
+
+    <!-- Toast Notification Box -->
+    <div id="toast" class="fixed bottom-5 left-5 z-50 transform -translate-y-10 opacity-0 pointer-events-none transition-all duration-300 bg-scar-red text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-white/20">
+        <i id="toast-icon" class="fa-solid fa-check-circle text-xl"></i>
+        <span id="toast-message" class="font-bold">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- Live Recharge Confirmation Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-scar-card border-2 border-scar-red rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl relative animate-bounce-once">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-1">تم إرسال طلب الشحن!</h3>
+            <p class="text-gray-400 text-xs mb-6">جارٍ معالجة وتأكيد الشحنة من خلال سكار ستور</p>
+            
+            <div class="bg-black/60 p-4 rounded-2xl border border-scar-border text-right space-y-2 mb-6">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">اللعبة:</span>
+                    <span id="modal-game" class="font-bold text-white">PUBG Mobile</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">الباقة المضافة:</span>
+                    <span id="modal-package" class="font-bold text-scar-red">660 UC</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">رقم ID الحساب:</span>
+                    <span id="modal-id" class="font-mono text-amber-400 font-bold">512345678</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-white/10 pt-2 mt-2">
+                    <span class="text-gray-300">حالة الشحنة:</span>
+                    <span class="bg-emerald-500/20 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full text-[10px] border border-emerald-500/30">
+                        <i class="fa-solid fa-spinner animate-spin ml-1"></i> جاري الشحن فوري
+                    </span>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-300 mb-6">
+                تم توجيهك لشات الواتساب الرسمي لسكار ستور (<span class="text-scar-red font-mono font-bold">01515275929</span>) لإرسال إيصال التحويل مباشرةً.
+            </p>
+
+            <button onclick="closeModal()" class="w-full bg-scar-red hover:bg-scar-darkRed text-white font-bold py-3 rounded-xl transition-colors">
+                حسناً، فهمت
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-scar-darkRed via-scar-red to-scar-darkRed text-white text-xs md:text-sm py-2 px-4 text-center font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg">
+        <i class="fa-solid fa-bolt animate-bounce"></i>
+        <span>شحن سريع وآمن 100% | ببجي وفري فاير وكافة الألعاب متاحة 24 ساعة</span>
+        <i class="fa-solid fa-bolt animate-bounce"></i>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-scar-border/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 bg-gradient-to-br from-scar-red to-black rounded-xl flex items-center justify-center text-2xl font-black shadow-lg shadow-scar-red/30 group-hover:scale-105 transition-transform border border-scar-red/50">
+                    <i class="fa-solid fa-gamepad text-white"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider text-white flex items-center gap-1">
+                        SCAR <span class="text-scar-red neon-text">STORE</span>
+                    </span>
+                    <span class="text-xs text-gray-400 block -mt-1 font-semibold">سكار ستور لشحن الألعاب</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 font-bold text-sm">
+                <a href="#games-section" class="text-white hover:text-scar-red transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-fire text-scar-red"></i> الألعاب والباقات
+                </a>
+                <a href="#payment-section" class="text-gray-300 hover:text-scar-red transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-wallet text-scar-red"></i> طرق الدفع
+                </a>
+                <a href="#support-section" class="text-gray-300 hover:text-scar-red transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-headset text-scar-red"></i> الدعم الفني
+                </a>
+            </nav>
+
+            <!-- Store Contact Quick Button -->
+            <a href="https://wa.me/201515275929" target="_blank" class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-900/30 text-sm">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>تواصل مباشر</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="relative py-12 md:py-16 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-gradient-to-r from-scar-card via-black to-scar-card rounded-3xl p-8 md:p-12 border border-scar-red/30 relative overflow-hidden shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-scar-red/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="max-w-2xl">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-scar-red/20 text-scar-red text-xs font-extrabold mb-4 border border-scar-red/40">
+                        <i class="fa-solid fa-shield-halved"></i> المنصة المعتمدة والأسرع
+                    </span>
+                    <h1 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+                        اشحن العابك المفضلة بضغط زر مع <span class="text-scar-red neon-text">سكار ستور</span>
+                    </h1>
+                    <p class="text-gray-300 text-sm md:text-base mb-8 leading-relaxed">
+                        نوفر لك أسرع خدمة شحن لـ <strong>PUBG Mobile, Free Fire, eFootball, FC Mobile, Roblox</strong> وكافة البطاقات الأكواد بأسعار تنافسية وتحويل فوري على مدار الساعة.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#games-section" class="bg-scar-red hover:bg-scar-darkRed text-white font-black px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-scar-red/40 flex items-center gap-3">
+                            <i class="fa-solid fa-gamepad"></i> تصفح الألعاب والباقات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16 flex-grow w-full">
+
+        <!-- Step 1: Select Game Section -->
+        <section id="games-section" class="scroll-mt-24">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
+                        <span class="w-3 h-8 bg-scar-red rounded-full inline-block"></span>
+                        اختر اللعبة أو البطاقة للشحن
+                    </h2>
+                    <p class="text-gray-400 text-sm mt-1">اضغط على اللعبة لعرض باقات الشحن المتاحة ورصيد الشدات</p>
+                </div>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" id="games-container">
+                <!-- JS will render games here including PUBG and Free Fire -->
+            </div>
+        </section>
+
+        <!-- Step 2: Select Package & Enter Player Info (Appears when Game Selected) -->
+        <section id="package-section" class="scroll-mt-24 hidden">
+            <div class="bg-scar-card rounded-3xl p-6 md:p-8 border border-scar-border shadow-2xl relative">
+                <div class="flex items-center justify-between border-b border-scar-border pb-6 mb-6">
+                    <div class="flex items-center gap-4">
+                        <div id="selected-game-icon" class="w-14 h-14 rounded-2xl bg-black border border-scar-red/50 flex items-center justify-center text-2xl text-scar-red">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-scar-red font-bold block">اللعبة المختارة:</span>
+                            <h3 id="selected-game-name" class="text-2xl font-black text-white">PUBG Mobile</h3>
+                        </div>
+                    </div>
+                    <button onclick="resetSelection()" class="text-gray-400 hover:text-scar-red text-sm font-bold flex items-center gap-1 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                        <i class="fa-solid fa-rotate-right"></i> تغيير اللعبة
+                    </button>
+                </div>
+
+                <!-- Select Package Sub-section -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-scar-red"></i> اختر باقة الشحن المناسبة:
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="packages-container">
+                        <!-- JS will render packages here -->
+                    </div>
+                </div>
+
+                <!-- Player Information Input Sub-section -->
+                <div class="bg-black/40 rounded-2xl p-5 border border-scar-border">
+                    <h4 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-scar-red"></i> بيانات حساب اللاعب:
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2" id="id-label">معرف اللاعب (Player ID) *</label>
+                            <input type="text" id="player-id" placeholder="أدخل ID حسابك باللعبة هنا" class="w-full bg-scar-dark border border-scar-border focus:border-scar-red focus:outline-none rounded-xl px-4 py-3 text-white text-sm font-bold transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-2">اسم الحساب باللعبة (اختياري)</label>
+                            <input type="text" id="player-name" placeholder="أدخل اسمك داخل اللعبة للتأكيد" class="w-full bg-scar-dark border border-scar-border focus:border-scar-red focus:outline-none rounded-xl px-4 py-3 text-white text-sm font-bold transition-all">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Payment Method & Submit Order Section -->
+        <section id="payment-section" class="scroll-mt-24">
+            <div class="bg-scar-card rounded-3xl p-6 md:p-8 border border-scar-border shadow-2xl">
+                <h2 class="text-2xl md:text-3xl font-black text-white flex items-center gap-3 mb-6">
+                    <span class="w-3 h-8 bg-scar-red rounded-full inline-block"></span>
+                    إتمام الدفع وإرسال الطلب
+                </h2>
+
+                <!-- Payment Methods Grid -->
+                <div class="mb-8">
+                    <label class="block text-sm font-bold text-gray-300 mb-3">اختر طريقة الدفع المناسبة لك:</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="selectPayment('wepay')" id="pay-wepay" class="payment-btn active bg-scar-dark border-2 border-scar-red p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-scar-red transition-all">
+                            <i class="fa-solid fa-wallet text-2xl text-purple-400"></i>
+                            <span class="font-bold text-sm">محفظة WE Pay</span>
+                        </button>
+                        <button onclick="selectPayment('vodafone')" id="pay-vodafone" class="payment-btn bg-scar-dark border-2 border-scar-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-scar-red transition-all">
+                            <i class="fa-solid fa-mobile-screen text-2xl text-red-500"></i>
+                            <span class="font-bold text-sm">فودافون كاش</span>
+                        </button>
+                        <button onclick="selectPayment('instapay')" id="pay-instapay" class="payment-btn bg-scar-dark border-2 border-scar-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-scar-red transition-all">
+                            <i class="fa-solid fa-building-columns text-2xl text-purple-500"></i>
+                            <span class="font-bold text-sm">إنستاباي InstaPay</span>
+                        </button>
+                        <button onclick="selectPayment('orange')" id="pay-orange" class="payment-btn bg-scar-dark border-2 border-scar-border p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-scar-red transition-all">
+                            <i class="fa-solid fa-wallet text-2xl text-orange-500"></i>
+                            <span class="font-bold text-sm">أورانج / اتصالات كاش</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Highlighted Number Area -->
+                <div class="bg-gradient-to-r from-black via-scar-dark to-black p-6 rounded-2xl border-2 border-dashed border-scar-red/60 text-center mb-8 relative overflow-hidden">
+                    <p class="text-xs text-gray-400 font-bold mb-2">قم بتحويل المبلغ المطلوب للشحن على رقم المحفظة أدناه:</p>
+                    <div class="flex flex-wrap items-center justify-center gap-3">
+                        <span id="store-number" class="text-2xl md:text-3xl font-black text-scar-red tracking-wider dir-ltr neon-text">01515275929</span>
+                        <button onclick="copyStoreNumber()" class="bg-scar-red/20 hover:bg-scar-red text-scar-red hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-scar-red/50 flex items-center gap-2">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>نسخ الرقم</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-amber-400 font-semibold mt-3 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        يرجى تحويل المبلغ بدقة لتفادي أي تأخير في تنفيذ شحنتك.
+                    </p>
+                </div>
+
+                <!-- Sender Wallet Info Form -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-2">رقم المحفظة المحوَّل منها *</label>
+                        <input type="text" id="sender-number" placeholder="أدخل الرقم الذي قمت بالتحويل منه" class="w-full bg-scar-dark border border-scar-border focus:border-scar-red focus:outline-none rounded-xl px-4 py-3 text-white text-sm font-bold transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-2">رقم مرجعي أو ملاحظة إضافية (اختياري)</label>
+                        <input type="text" id="transfer-note" placeholder="مثلاً: كود التحويل أو وقت التحويل" class="w-full bg-scar-dark border border-scar-border focus:border-scar-red focus:outline-none rounded-xl px-4 py-3 text-white text-sm font-bold transition-all">
+                    </div>
+                </div>
+
+                <!-- Order Summary & Submit Button -->
+                <div class="bg-black/60 p-6 rounded-2xl border border-scar-border flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <span class="text-xs text-gray-400 font-bold block">إجمالي السعر المطلوب تحويله:</span>
+                        <div class="text-3xl font-black text-white">
+                            <span id="total-price" class="text-scar-red neon-text">0</span>
+                            <span class="text-sm font-bold text-gray-400">جنيه مصري (EGP)</span>
+                        </div>
+                    </div>
+                    <button onclick="submitOrder()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-xl shadow-emerald-950/50 flex items-center justify-center gap-3 text-base">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>إرسال طلب الشحن عبر الواتساب</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works Info Section -->
+        <section id="how-it-works" class="scroll-mt-24">
+            <h2 class="text-2xl font-black text-white text-center mb-10">خطوات الشحن في منصة سكار ستور</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-scar-card p-6 rounded-2xl border border-scar-border text-center relative">
+                    <div class="w-12 h-12 bg-scar-red/20 text-scar-red font-black text-xl rounded-xl flex items-center justify-center mx-auto mb-4 border border-scar-red/40">1</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">اختر اللعبة والباقة</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">حدّد اللعبة المُراد شحنها واختر الباقة المناسبة مع كتابة ID اللاعب بشكل صحيح.</p>
+                </div>
+                <div class="bg-scar-card p-6 rounded-2xl border border-scar-border text-center relative">
+                    <div class="w-12 h-12 bg-scar-red/20 text-scar-red font-black text-xl rounded-xl flex items-center justify-center mx-auto mb-4 border border-scar-red/40">2</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">حوّل المبلغ المطلوبة</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">انسخ رقم المتجر وحوّل قيمة الباقة عبر المحفظة أو تطبيق InstaPay.</p>
+                </div>
+                <div class="bg-scar-card p-6 rounded-2xl border border-scar-border text-center relative">
+                    <div class="w-12 h-12 bg-scar-red/20 text-scar-red font-black text-xl rounded-xl flex items-center justify-center mx-auto mb-4 border border-scar-red/40">3</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">تأكيد واستلام الشحنة</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">ارسل إيصال أو بيانات التحويل عبر الواتساب وسنقوم بإضافة الشدات أو الكوينز بحسابك فوراً.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="support-section" class="bg-black border-t border-scar-border/60 py-10 mt-16 text-gray-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-scar-border/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-scar-red rounded-xl flex items-center justify-center text-white text-xl font-bold">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-black text-white block">SCAR STORE</span>
+                        <span class="text-gray-500">متجرك الموثوق لشحن جميع الألعاب الإلكترونية</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6 font-bold">
+                    <a href="https://wa.me/201515275929" target="_blank" class="hover:text-scar-red transition-colors flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg text-emerald-500"></i> خدمة العملاء
+                    </a>
+                    <a href="#games-section" class="hover:text-scar-red transition-colors">الألعاب</a>
+                    <a href="#payment-section" class="hover:text-scar-red transition-colors">طرق الدفع</a>
+                </div>
+            </div>
+
+            <div class="pt-6 text-center text-gray-500 font-semibold flex flex-col md:flex-row items-center justify-between gap-4">
+                <p>جميع الحقوق محفوظة © 2026 - سكار ستور (Scar Store)</p>
+                <p class="text-gray-600">تصميم وتنفيذ متطور بخدمة فائقة السرعة</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Store Mobile WhatsApp Number & WE Pay Number Unified
+        const WHATSAPP_NUMBER = "201515275929";
+
+        // Store Payment Phone Number (WE Pay Default)
+        let currentStoreNumber = "01515275929";
+
+        // Full Games & Packages Data Including PUBG & Free Fire
+        const gamesData = [
+            {
+                id: "pubg",
+                name: "PUBG Mobile",
+                category: "شدات UC",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 text-3xl font-black border border-amber-500/30"><i class="fa-solid fa-gun"></i></div>`,
+                color: "from-amber-500/20 to-scar-card",
+                idLabel: "معرف اللاعب (Player ID) / الرقم التعريفي",
+                packages: [
+                    { id: "p1", name: "60 شدة UC", price: 48 },
+                    { id: "p2", name: "325 شدة UC", price: 235 },
+                    { id: "p3", name: "660 شدة UC", price: 460 },
+                    { id: "p4", name: "1800 شدة UC", price: 1220 },
+                    { id: "p5", name: "3850 شدة UC", price: 2450 },
+                    { id: "p6", name: "8100 شدة UC", price: 4850 }
+                ]
+            },
+            {
+                id: "freefire",
+                name: "Free Fire",
+                category: "جواهر Diamonds",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-3xl font-black border border-cyan-500/30"><i class="fa-solid fa-gem"></i></div>`,
+                color: "from-cyan-500/20 to-scar-card",
+                idLabel: "معرف الحساب (Player ID)",
+                packages: [
+                    { id: "ff1", name: "100 جوهرة + بونص", price: 42 },
+                    { id: "ff2", name: "310 جوهرة + بونص", price: 125 },
+                    { id: "ff3", name: "520 جوهرة + بونص", price: 205 },
+                    { id: "ff4", name: "1060 جوهرة + بونص", price: 410 },
+                    { id: "ff5", name: "2180 جوهرة + بونص", price: 820 }
+                ]
+            },
+            {
+                id: "fcmobile",
+                name: "FC Mobile (EA SPORTS)",
+                category: "نقاط FC Points",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-emerald-600/10 flex items-center justify-center text-emerald-400 text-3xl font-black border border-emerald-500/30">FC</div>`,
+                color: "from-emerald-600/20 to-scar-card",
+                idLabel: "معرف اللاعب / UID الخاص باللعبة",
+                packages: [
+                    { id: "fc1", name: "100 FC Points", price: 45 },
+                    { id: "fc2", name: "520 FC Points", price: 215 },
+                    { id: "fc3", name: "1070 FC Points", price: 420 },
+                    { id: "fc4", name: "2200 FC Points", price: 850 },
+                    { id: "fc5", name: "5700 FC Points", price: 2100 }
+                ]
+            },
+            {
+                id: "efootball",
+                name: "eFootball PES",
+                category: "كوينز Coins",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-3xl"><i class="fa-solid fa-football"></i></div>`,
+                color: "from-blue-500/20 to-scar-card",
+                idLabel: "البريد الإلكتروني / ID الحساب",
+                packages: [
+                    { id: "e1", name: "130 كوينز", price: 45 },
+                    { id: "e2", name: "550 كوينز", price: 190 },
+                    { id: "e3", name: "1040 كوينز", price: 360 },
+                    { id: "e4", name: "2130 كوينز", price: 710 },
+                    { id: "e5", name: "3250 كوينز", price: 1050 }
+                ]
+            },
+            {
+                id: "roblox",
+                name: "Roblox",
+                category: "روبوكس Robux",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 text-3xl"><i class="fa-solid fa-cube"></i></div>`,
+                color: "from-red-500/20 to-scar-card",
+                idLabel: "اسم المستخدم (Username)",
+                packages: [
+                    { id: "r1", name: "80 Robux", price: 45 },
+                    { id: "r2", name: "400 Robux", price: 210 },
+                    { id: "r3", name: "800 Robux", price: 410 },
+                    { id: "r4", name: "1700 Robux", price: 830 },
+                    { id: "r5", name: "4500 Robux", price: 2050 }
+                ]
+            },
+            {
+                id: "cod",
+                name: "Call of Duty Mobile",
+                category: "نقاط CP",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-3xl"><i class="fa-solid fa-crosshairs"></i></div>`,
+                color: "from-emerald-500/20 to-scar-card",
+                idLabel: "Player ID / Activision ID",
+                packages: [
+                    { id: "c1", name: "80 CP", price: 40 },
+                    { id: "c2", name: "420 CP", price: 200 },
+                    { id: "c3", name: "880 CP", price: 390 },
+                    { id: "c4", name: "2400 CP", price: 980 }
+                ]
+            },
+            {
+                id: "googleplay",
+                name: "بطاقات Google Play",
+                category: "كروت شحن",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-3xl"><i class="fa-brands fa-google-play"></i></div>`,
+                color: "from-green-500/20 to-scar-card",
+                idLabel: "رقم الموبايل لاستلام الكود",
+                packages: [
+                    { id: "g1", name: "كارت 5$ متجر أمريكي", price: 250 },
+                    { id: "g2", name: "كارت 10$ متجر أمريكي", price: 490 },
+                    { id: "g3", name: "كارت 25$ متجر أمريكي", price: 1220 }
+                ]
+            },
+            {
+                id: "itunes",
+                name: "بطاقات iTunes / Apple",
+                category: "كروت شحن",
+                logoHtml: `<div class="w-full h-full rounded-xl bg-gray-200/10 flex items-center justify-center text-white text-3xl"><i class="fa-brands fa-apple"></i></div>`,
+                color: "from-purple-500/20 to-scar-card",
+                idLabel: "رقم الموبايل / الإيميل",
+                packages: [
+                    { id: "i1", name: "بطاقة 5$ iTunes", price: 255 },
+                    { id: "i2", name: "بطاقة 10$ iTunes", price: 495 },
+                    { id: "i3", name: "بطاقة 25$ iTunes", price: 1230 }
+                ]
+            }
+        ];
+
+        // State Variables
+        let selectedGame = null;
+        let selectedPackage = null;
+        let selectedPaymentMethod = "محفظة WE Pay";
+
+        // Initial Render
+        window.onload = function() {
+            renderGames();
+        };
+
+        // Render Games in Grid
+        function renderGames() {
+            const container = document.getElementById('games-container');
+            container.innerHTML = '';
+
+            gamesData.forEach(game => {
+                const card = document.createElement('div');
+                card.className = `game-card bg-gradient-to-b ${game.color} rounded-2xl p-5 border border-scar-border hover:border-scar-red transition-all cursor-pointer flex flex-col justify-between neon-border group`;
+                card.onclick = () => selectGame(game.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-black/80 border border-scar-border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2 shadow-lg">
+                            ${game.logoHtml}
+                        </div>
+                        <span class="text-xs text-scar-red font-bold">${game.category}</span>
+                        <h3 class="text-lg font-extrabold text-white mb-2">${game.name}</h3>
+                    </div>
+                    <button class="w-full mt-4 bg-scar-red/10 hover:bg-scar-red text-scar-red hover:text-white font-bold py-2 rounded-xl text-xs transition-colors border border-scar-red/30">
+                        عرض الباقات
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Select a game
+        function selectGame(gameId) {
+            selectedGame = gamesData.find(g => g.id === gameId);
+            selectedPackage = null;
+            document.getElementById('total-price').innerText = '0';
+
+            // Update UI elements
+            document.getElementById('selected-game-name').innerText = selectedGame.name;
+            document.getElementById('selected-game-icon').innerHTML = selectedGame.logoHtml;
+            document.getElementById('id-label').innerText = `${selectedGame.idLabel} *`;
+
+            renderPackages(selectedGame.packages);
+
+            // Show Package Section & Scroll to it
+            const pkgSection = document.getElementById('package-section');
+            pkgSection.classList.remove('hidden');
+            pkgSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Render Packages for selected game
+        function renderPackages(packages) {
+            const container = document.getElementById('packages-container');
+            container.innerHTML = '';
+
+            packages.forEach(pkg => {
+                const card = document.createElement('div');
+                card.className = `pkg-card bg-scar-dark border border-scar-border p-4 rounded-2xl cursor-pointer hover:border-scar-red transition-all flex items-center justify-between`;
+                card.id = `pkg-${pkg.id}`;
+                card.onclick = () => selectPackage(pkg);
+
+                card.innerHTML = `
+                    <div>
+                        <span class="text-sm font-bold text-white block">${pkg.name}</span>
+                        <span class="text-xs text-scar-red font-bold">${pkg.price} EGP</span>
+                    </div>
+                    <div class="w-6 h-6 rounded-full border border-scar-border flex items-center justify-center text-xs text-transparent check-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Select a Package
+        function selectPackage(pkg) {
+            selectedPackage = pkg;
+
+            // Highlight Selected Card
+            document.querySelectorAll('.pkg-card').forEach(c => {
+                c.classList.remove('border-scar-red', 'bg-scar-red/10');
+                c.classList.add('border-scar-border', 'bg-scar-dark');
+                const check = c.querySelector('.check-icon');
+                check.classList.remove('bg-scar-red', 'text-white', 'border-scar-red');
+                check.classList.add('text-transparent');
+            });
+
+            const activeCard = document.getElementById(`pkg-${pkg.id}`);
+            activeCard.classList.remove('border-scar-border', 'bg-scar-dark');
+            activeCard.classList.add('border-scar-red', 'bg-scar-red/10');
+
+            const check = activeCard.querySelector('.check-icon');
+            check.classList.remove('text-transparent');
+            check.classList.add('bg-scar-red', 'text-white', 'border-scar-red');
+
+            // Update Total Price
+            document.getElementById('total-price').innerText = pkg.price;
+        }
+
+        // Reset Selection
+        function resetSelection() {
+            selectedGame = null;
+            selectedPackage = null;
+            document.getElementById('package-section').classList.add('hidden');
+            document.getElementById('total-price').innerText = '0';
+            document.getElementById('games-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Handle Payment Method Selection
+        function selectPayment(methodKey) {
+            const methods = {
+                'wepay': { name: 'محفظة WE Pay', number: '01515275929' },
+                'vodafone': { name: 'فودافون كاش', number: '01515275929' },
+                'instapay': { name: 'إنستاباي InstaPay', number: '01515275929' },
+                'orange': { name: 'أورانج / اتصالات كاش', number: '01515275929' }
+            };
+
+            const chosen = methods[methodKey];
+            selectedPaymentMethod = chosen.name;
+            currentStoreNumber = chosen.number;
+
+            document.getElementById('store-number').innerText = currentStoreNumber;
+
+            // Update Button Styles
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.classList.remove('border-scar-red');
+                btn.classList.add('border-scar-border');
+            });
+
+            document.getElementById(`pay-${methodKey}`).classList.remove('border-scar-border');
+            document.getElementById(`pay-${methodKey}`).classList.add('border-scar-red');
+
+            showToast(`تم اختيار طريقة الدفع: ${chosen.name}`);
+        }
+
+        // Copy Store Number to Clipboard
+        function copyStoreNumber() {
+            const numberText = document.getElementById('store-number').innerText;
+            
+            const tempInput = document.createElement('input');
+            tempInput.value = numberText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('تم نسخ الرقم إلى الحافظة بنجاح!');
+        }
+
+        // Submit Order to WhatsApp & Show Live Status Modal
+        function submitOrder() {
+            if (!selectedGame) {
+                showToast('يرجى اختيار اللعبة أولاً!', 'error');
+                document.getElementById('games-section').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            if (!selectedPackage) {
+                showToast('يرجى اختيار باقة الشحن المطلوبة!', 'error');
+                document.getElementById('package-section').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            const playerId = document.getElementById('player-id').value.trim();
+            const playerName = document.getElementById('player-name').value.trim();
+            const senderNumber = document.getElementById('sender-number').value.trim();
+            const transferNote = document.getElementById('transfer-note').value.trim();
+
+            if (!playerId) {
+                showToast('يرجى إدخال معرف اللاعب (Player ID)!', 'error');
+                document.getElementById('player-id').focus();
+                return;
+            }
+
+            if (!senderNumber) {
+                showToast('يرجى إدخال الرقم الذي قمت بالتحويل منه!', 'error');
+                document.getElementById('sender-number').focus();
+                return;
+            }
+
+            // Construct WhatsApp Message
+            let message = `*طلب شحن جديد - سكار ستور (Scar Store)* 🎮%0A%0A`;
+            message += `🎮 *اللعبة:* ${selectedGame.name}%0A`;
+            message += `📦 *الباقة:* ${selectedPackage.name}%0A`;
+            message += `💰 *المبلغ المطلوب:* ${selectedPackage.price} جنيه مصري%0A%0A`;
+            message += `🆔 *معرف اللاعب (ID):* ${playerId}%0A`;
+            if (playerName) message += `👤 *اسم الحساب:* ${playerName}%0A`;
+            message += `%0A💳 *طريقة الدفع:* ${selectedPaymentMethod}%0A`;
+            message += `📱 *رقم المحفظة المحوَّل منها:* ${senderNumber}%0A`;
+            if (transferNote) message += `📝 *ملاحظات التحويل:* ${transferNote}%0A`;
+            message += `%0A⏳ *تم تحويل المبلغ إلى رقم المحفظة (01515275929). يرجى إضافة الشدات/الرصيد فوراً!*`;
+
+            // Display Success & Credit Status Modal
+            document.getElementById('modal-game').innerText = selectedGame.name;
+            document.getElementById('modal-package').innerText = selectedPackage.name;
+            document.getElementById('modal-id').innerText = playerId;
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // Open WhatsApp Link
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+            setTimeout(() => {
+                window.open(whatsappUrl, '_blank');
+            }, 600);
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // Show Toast Notification
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+
+            if (type === 'error') {
+                toast.classList.remove('bg-scar-red');
+                toast.classList.add('bg-amber-600');
+                toastIcon.className = 'fa-solid fa-triangle-exclamation text-xl';
+            } else {
+                toast.classList.remove('bg-amber-600');
+                toast.classList.add('bg-scar-red');
+                toastIcon.className = 'fa-solid fa-check-circle text-xl';
+            }
+
+            toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-10');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
